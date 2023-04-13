@@ -4,6 +4,7 @@ using Serilog;
 using VetApp_BE.Config;
 using VetApp_BE.Feature.Appointment.Repositories;
 using VetApp_BE.Feature.Pets.Repositories;
+using VetApp_BE.GenericRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Host.UseSerilog();
 
 
 // Add Repository.
+builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 

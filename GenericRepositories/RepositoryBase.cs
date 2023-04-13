@@ -1,19 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VetApp_BE.Config;
 
 namespace VetApp_BE.GenericRepositories
 {
-   
+
+
     public interface IRepositoryBase<T>
     {
-        T GetById(int id);
-        IEnumerable<T> GetAll();
-        IEnumerable<T> Find(Expression<Func<T, bool>> expression);
-        Task<T> Add(T entity);
-        void AddRange(IEnumerable<T> entities);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
+        Task<T> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
+        Task<T> AddAsync(T entity);
+        Task<T> UpdateAsync(T entity);
+
+        Task AddRangeAsync(IEnumerable<T> entities);
+        Task RemoveAsync(T entity);
+        Task RemoveRangeAsync(IEnumerable<T> entities);
     }
 
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
@@ -23,35 +29,43 @@ namespace VetApp_BE.GenericRepositories
         {
             _context = context;
         }
-        public async Task<T> Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
             return entity;
         }
-        public void AddRange(IEnumerable<T> entities)
+        public async Task<T> UpdateAsync(T entity)
         {
-            _context.Set<T>().AddRange(entities);
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
-        public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            return _context.Set<T>().Where(expression);
+            await _context.Set<T>().AddRangeAsync(entities);
         }
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
         {
-            return _context.Set<T>().ToList();
+            return await _context.Set<T>().Where(expression).ToListAsync();
         }
-        public T GetById(int id)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>().ToListAsync();
         }
-        public void Remove(T entity)
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+        public async Task RemoveAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
+            await Task.CompletedTask;
         }
-        public void RemoveRange(IEnumerable<T> entities)
+        public async Task RemoveRangeAsync(IEnumerable<T> entities)
         {
             _context.Set<T>().RemoveRange(entities);
+            await Task.CompletedTask;
         }
     }
-    
+
 }
