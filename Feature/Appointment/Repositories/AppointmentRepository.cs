@@ -9,6 +9,7 @@ namespace VetApp_BE.Feature.Appointment.Repositories
     public interface IAppointmentRepository: IRepositoryBase<AppointmentModels>
     {
         public Task<IEnumerable<AppointmentModels>> GetAppointments(AppointmentSearch search, int pageNumber = 1, int pageSize = 10);
+        public Task<int> GetAppointmentsTotal(AppointmentSearch search);
 
     }
 
@@ -42,6 +43,24 @@ namespace VetApp_BE.Feature.Appointment.Repositories
             {
                 throw;
             }
+
+        }
+
+        public async Task<int> GetAppointmentsTotal(AppointmentSearch search)
+        {
+            var query = _context.Appointments.Include(a => a.Pet).AsQueryable();
+
+            if (search.Date.HasValue)
+            {
+                query = query.Where(a => a.DateTime.Date == search.Date.Value.Date);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search.PetName))
+            {
+                query = query.Where(a => a.Pet.Name.Contains(search.PetName));
+            }
+
+            return query.Count();
 
         }
     }

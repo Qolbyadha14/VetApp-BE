@@ -9,12 +9,12 @@ namespace VetApp_BE.Feature.Pets
 {
     [ApiController]
     [Route("[controller]")]
-    public class Pets : ControllerBase
+    public class PetsController : ControllerBase
     {
         private readonly IPetRepository _petRepository;
-        private readonly ILogger<Pets> _logger;
+        private readonly ILogger<PetsController> _logger;
 
-        public Pets(IPetRepository petRepository, ILogger<Pets> logger)
+        public PetsController(IPetRepository petRepository, ILogger<PetsController> logger)
         {
             _petRepository = petRepository;
             _logger = logger;

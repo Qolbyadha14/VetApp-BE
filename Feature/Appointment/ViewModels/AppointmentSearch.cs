@@ -3,6 +3,6 @@
     public class AppointmentSearch
     {
         public DateTime? Date { get; set; }
-        public string PetName { get; set; }
+        public string? PetName { get; set; }
     }
 }
