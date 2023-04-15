@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using VetApp_BE.Config;
+using VetApp_BE.Feature.Appointment.Models;
 using VetApp_BE.Feature.Appointment.Repositories;
 using VetApp_BE.Feature.Pets.Repositories;
 using VetApp_BE.GenericRepositories;
@@ -79,6 +80,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+/*    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dbContext.Database.Migrate();
+
+    var dummyAppointments = AppointmentDummyData.GenerateAppointments(50);
+    dbContext.Appointments.AddRange(dummyAppointments);
+    dbContext.SaveChanges();*/
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
